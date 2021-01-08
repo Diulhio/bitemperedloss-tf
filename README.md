@@ -5,9 +5,9 @@ This is not an officially supported Google product.
 
 Overview of the method is here: [link Google AI Blogpost](https://ai.googleblog.com/2019/08/bi-tempered-logistic-loss-for-training.html)
 
-Original repository: https://github.com/google/bi-tempered-loss
-Adapted from: https://github.com/mlpanda/bi-tempered-loss-pytorch
-Paper: "Robust Bi-Tempered Logistic Loss Based on Bregman Divergences" (https://arxiv.org/abs/1906.03361)
+- Original repo: https://github.com/google/bi-tempered-loss
+- Adapted from: https://github.com/mlpanda/bi-tempered-loss-pytorch
+- Paper: "Robust Bi-Tempered Logistic Loss Based on Bregman Divergences" (https://arxiv.org/abs/1906.03361)
 
 To test the loss function with similar values to the test in the original repo, run the following file:
 ```
