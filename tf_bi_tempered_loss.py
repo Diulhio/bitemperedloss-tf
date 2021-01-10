@@ -14,7 +14,7 @@ def exp_t(u, t):
   if t == 1.0:
     return tf.math.exp(u)
   else:
-    return tf.math.maximum(0, 1.0 + (1.0 - t) * u) ** (1.0 / (1.0 - t))
+    return tf.math.maximum(0.0, 1.0 + (1.0 - t) * u) ** (1.0 / (1.0 - t))
 
 def compute_normalization_fixed_point(y_pred, t, num_iters=5):
   """Returns the normalization value for each example (t > 1.0).
