@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 import tensorflow as tf
 
 def log_t(u, t):
@@ -66,7 +65,7 @@ def tempered_softmax(y_pred, t, num_iters=5):
 
   return exp_t(y_pred - normalization_constants, t)
 
-def bi_tempered_logistic_loss(y_pred, y_true, t1, t2, num_iters=5):
+def bi_tempered_logistic_loss(y_pred, y_true, t1, t2, num_iters=5, label_smoothing=0.0):
   """Bi-Tempered Logistic Loss with custom gradient.
     Args:
     y_pred: A multi-dimensional tensor with last dimension `num_classes`.
@@ -77,6 +76,13 @@ def bi_tempered_logistic_loss(y_pred, y_true, t1, t2, num_iters=5):
     Returns:
     A loss tensor.
   """
+  y_pred = tf.cast(y_pred, tf.float32)
+  y_true = tf.cast(y_true, tf.float32)
+
+  if label_smoothing > 0.0:
+    num_classes = tf.cast(tf.shape(y_true)[-1], tf.float32)
+    y_true = (1 - num_classes /(num_classes - 1) * label_smoothing) * y_true + label_smoothing / (num_classes - 1)
+
   probabilities = tempered_softmax(y_pred, t2, num_iters)
 
   temp1 = (log_t(y_true + 1e-10, t1) - log_t(probabilities, t1)) * y_true
@@ -86,11 +92,12 @@ def bi_tempered_logistic_loss(y_pred, y_true, t1, t2, num_iters=5):
   return tf.math.reduce_sum(loss_values, -1)
 
 class BiTemperedLogisticLoss(tf.keras.losses.Loss):
-  def __init__(self, t1, t2, n_iter=5):
+  def __init__(self, t1, t2, n_iter=5, label_smoothing=0.0):
     super(BiTemperedLogisticLoss, self).__init__()
     self.t1 = t1
     self.t2 = t2
     self.n_iter = n_iter
+    self.label_smoothing = label_smoothing
 
   def call(self, y_true, y_pred):
-    return bi_tempered_logistic_loss(y_pred, y_true, self.t1, self.t2, self.n_iter)
+    return bi_tempered_logistic_loss(y_pred, y_true, self.t1, self.t2, self.n_iter, self.label_smoothing)
